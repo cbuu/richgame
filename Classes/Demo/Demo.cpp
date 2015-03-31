@@ -1,8 +1,10 @@
 #include "Demo/Demo.h"
+
+#include <sqlite3/include/sqlite3.h>
 #include<iostream>
 using namespace std;
 
-#include "sqlite3/include/sqlite3.h"
+//#pragma comment(lib,"C:/Users/CBUU/Desktop/project/richgame/cocos2d/external/sqlite3/libraries/win32/sqlite3.lib")
 
 Demo::Demo()
 {
@@ -20,8 +22,8 @@ bool Demo::init()
 	{
 		return false;
 	}
-
-	//testMap();
+	testTMX();
+	testMap();
 	testSQLite();
 	
 	return true;
@@ -153,6 +155,8 @@ void Demo::testSQLite()
 
 	//务必释放指针
 	sqlite3_free_table(re);
+
+	sqlite3_close(pdb);
 }
 
 void Demo::testMap()
