@@ -13,8 +13,14 @@ public:
 	virtual bool init();
 
 public:
-	void addTMX();
-	
+	void testTMX();
+
+	void testVector();
+	void testMap();
+
+	void testUserDefault();
+	void testSQLite();
+
 private:
 
 };
