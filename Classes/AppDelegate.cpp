@@ -1,5 +1,9 @@
 #include "AppDelegate.h"
-#include "HelloWorldScene.h"
+#include "utils/SceneWrapper.h"
+#include "GameSelectScene.h"
+#include "Demo/Demo.h"
+#include "TestGame/MainScene.h"
+#include "PushBox/PushBoxScene.h"
 
 USING_NS_CC;
 
@@ -37,11 +41,32 @@ bool AppDelegate::applicationDidFinishLaunching() {
     // set FPS. the default value is 1.0/60 if you don't call this
     director->setAnimationInterval(1.0 / 60);
 
-    // create a scene. it's an autorelease object
-    auto scene = HelloWorld::createScene();
+
+	//创建游戏入口类
+	GameSelectScene* layer = GameSelectScene::create();
+
+	//为入口界面添加菜单项 lambda写法
+	layer->addMenuItems("Demo", [](Ref* sender){
+		auto director = Director::getInstance();
+		director->replaceScene(SceneWrapper::wrap(Demo::create()));
+	});
+
+	layer->addMenuItems("PushBox", [](Ref* sender){
+		auto director = Director::getInstance();
+		director->replaceScene(SceneWrapper::wrap(PushBoxScene::create()));
+	});
+
+	layer->addMenuItems("TestGame", [](Ref* sender){
+		log("testgame");
+	});
+
+	layer->addMenuItems("RichGame", [](Ref* sender){
+		log("richgame");
+	});
+
 
     // run
-    director->runWithScene(scene);
+	director->runWithScene(SceneWrapper::wrap(layer));
 
     return true;
 }
