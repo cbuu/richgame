@@ -37,7 +37,7 @@ private:
 	Sprite* movingBox;
 	Vector<Sprite*> boxes;
 	Vector<Sprite*> goals;
-
+	Vector<Sprite*> walls;
 private:
 	Size visibleSize;
 };

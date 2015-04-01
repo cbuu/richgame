@@ -4,6 +4,8 @@ const float SIZE_BLOCK = 64.0;
 const int SIZE_MAP_WIDTH = 10;
 const int SIZE_MAP_HEIGHT = 10;
 
+const int TAG_WALL = 100;
+
 PushBoxScene::PushBoxScene() :movingBox(NULL)
 {
 
@@ -74,12 +76,14 @@ void PushBoxScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 	{
 		//按下按键w的事件实现
 		nextPos = Vec2(pos.x, pos.y + 1);
-		if (judge(nextPos)){
-			nextBoxPos = Vec2(nextPos.x, nextPos.y + 1);
-			moveBox(nextPos, nextBoxPos);
-		}
-		else{
-			moveTo(player, nextPos.x, nextPos.y);
+		if (canGo(nextPos)){
+			if (haveBox(nextPos)){
+				nextBoxPos = Vec2(nextPos.x, nextPos.y + 1);
+				moveBox(nextPos, nextBoxPos);
+			}
+			else{
+				moveTo(player, nextPos.x, nextPos.y);
+			}
 		}
 	}
 		break;
@@ -87,12 +91,14 @@ void PushBoxScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 	{
 		//按下按键s的事件实现
 		nextPos = Vec2(pos.x, pos.y -1);
-		if (judge(nextPos)){
-			nextBoxPos = Vec2(nextPos.x, nextPos.y - 1);
-			moveBox(nextPos, nextBoxPos);
-		}
-		else{
-			moveTo(player, nextPos.x, nextPos.y);
+		if (canGo(nextPos)){
+			if (haveBox(nextPos)){
+				nextBoxPos = Vec2(nextPos.x, nextPos.y - 1);
+				moveBox(nextPos, nextBoxPos);
+			}
+			else{
+				moveTo(player, nextPos.x, nextPos.y);
+			}
 		}
 	}
 		break;
@@ -100,12 +106,14 @@ void PushBoxScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 	{
 		//按下按键a的事件实现
 		nextPos = Vec2(pos.x-1, pos.y);
-		if (judge(nextPos)){
-			nextBoxPos = Vec2(nextPos.x-1, nextPos.y);
-			moveBox(nextPos, nextBoxPos);
-		}
-		else{
-			moveTo(player, nextPos.x, nextPos.y);
+		if (canGo(nextPos)){
+			if (haveBox(nextPos)){
+				nextBoxPos = Vec2(nextPos.x -1 , nextPos.y);
+				moveBox(nextPos, nextBoxPos);
+			}
+			else{
+				moveTo(player, nextPos.x, nextPos.y);
+			}
 		}
 	}
 		break;
@@ -113,12 +121,14 @@ void PushBoxScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 	{
 		//按下按键d的事件实现
 		nextPos = Vec2(pos.x+1, pos.y);
-		if (judge(nextPos)){
-			nextBoxPos = Vec2(nextPos.x+1, nextPos.y);
-			moveBox(nextPos,nextBoxPos);
-		}
-		else{
-			moveTo(player, nextPos.x, nextPos.y);
+		if (canGo(nextPos)){
+			if (haveBox(nextPos)){
+				nextBoxPos = Vec2(nextPos.x+1, nextPos.y);
+				moveBox(nextPos, nextBoxPos);
+			}
+			else{
+				moveTo(player, nextPos.x, nextPos.y);
+			}
 		}
 	}
 	default:
@@ -131,11 +141,8 @@ void PushBoxScene::parseTMX(TMXTiledMap* map)
 	TMXObjectGroup* objects = map->getObjectGroup("box");
 	ValueVector container = objects->getObjects();
 
-	ValueVector::iterator it = container.begin();
-
-	for (; it != container.end();it++)
+	for (auto obj:container)
 	{
-		Value obj = *it;
 		ValueMap values = obj.asValueMap();
 		Sprite* box = Sprite::create("PushBox/box.png");
 		box->setAnchorPoint(Vec2(0, 0));
@@ -147,11 +154,8 @@ void PushBoxScene::parseTMX(TMXTiledMap* map)
 	objects = map->getObjectGroup("goal");
 	container = objects->getObjects();
 
-	it = container.begin();
-
-	for (; it != container.end(); it++)
+	for (auto obj:container)
 	{
-		Value obj = *it;
 		ValueMap values = obj.asValueMap();
 		Sprite* goal = Sprite::create("PushBox/goal.png");
 		goal->setAnchorPoint(Vec2(0, 0));
@@ -159,14 +163,26 @@ void PushBoxScene::parseTMX(TMXTiledMap* map)
 		this->addChild(goal,1);
 		goals.pushBack(goal);
 	}
+
+	objects = map->getObjectGroup("wall");
+	container = objects->getObjects();
+
+	for (auto obj:container)
+	{
+		ValueMap values = obj.asValueMap();
+		Sprite* wall = Sprite::create("PushBox/wall.png");
+		wall->setAnchorPoint(Vec2(0, 0));
+		wall->setPosition(values.at("x").asInt(), values.at("y").asInt());
+		wall->setTag(TAG_WALL);
+		this->addChild(wall, 1);
+		walls.pushBack(wall);
+	}
 }
 
 void PushBoxScene::moveTo(Sprite* sprite, int x, int y)
 {
 	if (sprite){
-		if (x > 0 && x < SIZE_MAP_WIDTH - 1 && y > 0 && y < SIZE_MAP_WIDTH - 1){
 			sprite->setPosition(SIZE_BLOCK*x, SIZE_BLOCK*y);
-		}
 	}
 }
 
@@ -207,7 +223,16 @@ bool PushBoxScene::isEnd()
 
 bool PushBoxScene::canGo(Vec2 pos)
 {
-	return pos.x > 0 && pos.x < SIZE_MAP_WIDTH - 1 && pos.y > 0 && pos.y < SIZE_MAP_WIDTH - 1;
+	for (auto obj:walls)
+	{
+		Vec2 wp = getPos(obj);
+		
+		if (wp == pos)
+		{
+			return false;
+		}
+	}
+	return true;
 }
 
 bool PushBoxScene::haveBox(Vec2 pos)
