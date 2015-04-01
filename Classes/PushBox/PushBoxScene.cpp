@@ -257,6 +257,9 @@ void PushBoxScene::showWin()
 	winLabel->setPosition(visibleSize.width / 2, visibleSize.height / 2);
 	this->addChild(winLabel, 11);
 	Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
+
+
+	//winLabel->setEventDispatcher()
 }
 
 
