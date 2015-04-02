@@ -13,16 +13,16 @@ public:
 	virtual bool init();
 	//void update(float delta);
 
-	void initKeyboardEvent();
+	void initTouchEvent();
 
-	void onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event);
-	//void onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event);
+	void onRightPressed(Ref* sender);
+	void onLeftPressed(Ref* sender);
+	void onUpPressed(Ref* sender);
+	void onDownPressed(Ref* sender);
 
 	void parseTMX(TMXTiledMap* map);
 
 public:
-
-	bool judge(Vec2 nextPos);
 
 	void moveTo(Sprite* sprite,int x,int y);
 	Vec2 getPos(Sprite* sprite);
@@ -40,4 +40,6 @@ private:
 	Vector<Sprite*> walls;
 private:
 	Size visibleSize;
+
+	int DIS_X, DIS_Y;
 };
