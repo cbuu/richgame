@@ -4,6 +4,14 @@
 #include<iostream>
 using namespace std;
 
+
+
+#include "json/rapidjson.h"
+#include "json/document.h"
+#include "json/writer.h"
+#include "json/stringbuffer.h"
+using namespace  rapidjson;
+
 //#pragma comment(lib,"C:/Users/CBUU/Desktop/project/richgame/cocos2d/external/sqlite3/libraries/win32/sqlite3.lib")
 
 Demo::Demo()
@@ -22,11 +30,51 @@ bool Demo::init()
 	{
 		return false;
 	}
-	testTMX();
-	testMap();
-	testSQLite();
+// 	testTMX();
+// 	testMap();
+// 	testSQLite();
+// 	testUserDefault();
+// 	testVector();
+ 	testJson();
 	
 	return true;
+}
+
+void Demo::testJson(){
+
+	//使用rapidjson生成json串
+	rapidjson::Document document;
+	document.SetObject();
+
+	rapidjson::Document::AllocatorType& allocator = document.GetAllocator();
+	rapidjson::Value array(rapidjson::kArrayType);
+	rapidjson::Value object(rapidjson::kObjectType);
+	object.AddMember("int", 1, allocator);
+	object.AddMember("double", 1.0, allocator);
+	object.AddMember("bool", true, allocator);
+	object.AddMember("say", "hi", allocator);
+	array.PushBack(object, allocator);
+
+	document.AddMember("json", "json string", allocator);
+	document.AddMember("array", array, allocator);
+
+	StringBuffer buffer;
+	rapidjson::Writer<StringBuffer> writer(buffer);
+	document.Accept(writer);
+
+	log("%s", buffer.GetString());
+
+	// 使用rapidjson解析json串
+	rapidjson::Document d;
+	d.Parse<0>(buffer.GetString());
+	if (d.HasParseError())  //打印解析错误
+	{
+		log("GetParseError %s\n", d.GetParseError());
+	}
+
+	if (d.IsObject() && d.HasMember("json")) {
+		log("%s\n", d["json"].GetString());//打印获取hello的值
+	}
 }
 
 void Demo::testVector(){

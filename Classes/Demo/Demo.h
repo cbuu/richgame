@@ -20,7 +20,7 @@ public:
 
 	void testUserDefault();
 	void testSQLite();
-
+	void testJson();
 private:
 
 };
