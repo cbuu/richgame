@@ -4,6 +4,7 @@
 #include "Demo/Demo.h"
 #include "TestGame/MainScene.h"
 #include "PushBox/PushBoxScene.h"
+#include "PhysicsGame/PhysicsScene.h"
 
 USING_NS_CC;
 
@@ -56,8 +57,9 @@ bool AppDelegate::applicationDidFinishLaunching() {
 		director->replaceScene(SceneWrapper::wrap(PushBoxScene::create()));
 	});
 
-	layer->addMenuItems("TestGame", [](Ref* sender){
-		log("testgame");
+	layer->addMenuItems("PhysicsGame", [](Ref* sender){
+		auto director = Director::getInstance();
+		director->replaceScene(PhysicsScene::createPhysicsScene());
 	});
 
 	layer->addMenuItems("RichGame", [](Ref* sender){
