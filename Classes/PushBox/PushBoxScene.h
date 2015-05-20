@@ -15,6 +15,8 @@ public:
 
 	void initTouchEvent();
 
+	void initDatabase();
+
 	void onRightPressed(Ref* sender);
 	void onLeftPressed(Ref* sender);
 	void onUpPressed(Ref* sender);
@@ -42,4 +44,8 @@ private:
 	Size visibleSize;
 
 	int DIS_X, DIS_Y;
+
+private:
+	Label* scoreLabel;
+	int score;
 };

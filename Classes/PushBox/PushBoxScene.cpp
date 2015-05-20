@@ -6,6 +6,7 @@ const int SIZE_MAP_HEIGHT = 10;
 const float SIZE_WSAD = 100.0;
 const int FONT_SIZE = 100;
 const int TAG_WALL = 100;
+const int TAG_PLAYER = 1;
 
 PushBoxScene::PushBoxScene() :movingBox(NULL)
 {
@@ -38,14 +39,19 @@ bool PushBoxScene::init()
 	player = Sprite::create("PushBox/player.png");
 	player->setAnchorPoint(Vec2(0, 0));
 	player->setPosition(SIZE_BLOCK * 1 + DIS_X, SIZE_BLOCK * 8 + DIS_Y);
+	player->setTag(TAG_PLAYER);
 	this->addChild(player,10);
 
 	parseTMX(tmx);
 
 	initTouchEvent();
 
+	initDatabase();
+
 	return true;
 }
+
+
 
 void PushBoxScene::initTouchEvent(){
 	auto menu = Menu::create();
@@ -126,6 +132,10 @@ void PushBoxScene::moveTo(Sprite* sprite, int x, int y)
 {
 	if (sprite){
 			sprite->setPosition(x*SIZE_BLOCK+DIS_X,y*SIZE_BLOCK+DIS_Y);
+			if (sprite->getTag()==TAG_PLAYER)
+			{
+				score++;
+			}
 	}
 }
 
@@ -199,10 +209,15 @@ void PushBoxScene::moveBox(Vec2 nextPos, Vec2 nextBoxPos)
 
 void PushBoxScene::showWin()
 {
-	Label* winLabel = Label::createWithTTF("YOU WIN!", "fonts/arial.ttf", 100);
+	char* s = new char[10];
+	sprintf(s, "%d steps", score);
+
+	Label* winLabel = Label::createWithTTF(s, "fonts/arial.ttf", 100);
 	winLabel->setPosition(visibleSize.width / 2, visibleSize.height / 2);
 	this->addChild(winLabel, 11);
 	Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
+	
+	UserDefault::getInstance()->setIntegerForKey("Score", score);
 }
 
 
@@ -276,6 +291,25 @@ void PushBoxScene::onDownPressed(Ref* sender)
 			moveTo(player, nextPos.x, nextPos.y);
 		}
 	}
+}
+
+void PushBoxScene::initDatabase()
+{
+	if (UserDefault::getInstance()->getBoolForKey("isExist"))
+	{
+		UserDefault::getInstance()->setBoolForKey("isExist", true);
+	}
+
+	int oldScore = UserDefault::getInstance()->getIntegerForKey("Score",0);
+
+	char* s = new char[10];
+	sprintf(s, "%d", oldScore);
+	scoreLabel = Label::createWithTTF(s, "fonts/Marker Felt.ttf", 75);
+	scoreLabel->setPosition(visibleSize.width / 2, visibleSize.height);
+	scoreLabel->setAnchorPoint(Vec2(0.5, 1.0));
+	this->addChild(scoreLabel, 10);
+
+	score = 0;
 }
 
 
