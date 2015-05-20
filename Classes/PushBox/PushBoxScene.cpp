@@ -51,7 +51,7 @@ void PushBoxScene::initTouchEvent(){
 	auto menu = Menu::create();
 	menu->setPosition(visibleSize.width,0);
 	menu->setAnchorPoint(Vec2::ANCHOR_BOTTOM_RIGHT);
-	this->addChild(menu);
+	this->addChild(menu,10);
 
 	auto label_W = Label::createWithTTF("W", "fonts/Marker Felt.ttf", FONT_SIZE);
 	auto label_S = Label::createWithTTF("S", "fonts/Marker Felt.ttf", FONT_SIZE);
