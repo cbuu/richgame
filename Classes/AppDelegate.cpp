@@ -1,3 +1,4 @@
+
 #include "AppDelegate.h"
 #include "utils/SceneWrapper.h"
 #include "GameSelectScene.h"
@@ -88,3 +89,4 @@ void AppDelegate::applicationWillEnterForeground() {
     // if you use SimpleAudioEngine, it must resume here
     // SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
 }
+
